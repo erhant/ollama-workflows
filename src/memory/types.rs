@@ -72,11 +72,7 @@ impl MemoryReturnType {
                     .iter()
                     .map(|entry| entry.to_string().clone())
                     .collect();
-                let res = serde_json::to_string(&values);
-                match res {
-                    Ok(json) => Some(json),
-                    Err(_) => None,
-                }
+                serde_json::to_string(&values).ok()
             }
             MemoryReturnType::Multiple(returns) => {
                 let values: Vec<String> = returns.iter().map(|ret| ret.to_string()).collect();

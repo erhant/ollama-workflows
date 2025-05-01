@@ -92,23 +92,16 @@ impl ProgramMemory {
     pub async fn insert(&mut self, doc: &types::Entry) {
         let _ = self.file_system.add(doc).await;
     }
+
     /// Search the file system.
     pub async fn search(&self, query: &types::Entry) -> Option<Vec<types::Entry>> {
-        let resu = self.file_system.search(query).await;
-        match resu {
-            Ok(res) => Some(res),
-            Err(_) => None,
-        }
+        self.file_system.search(query).await.ok()
     }
 
     pub async fn have_similar(&self, query: &str, threshold: Option<f32>) -> Option<bool> {
-        let res = self
-            .file_system
+        self.file_system
             .have_similar(&types::Entry::try_value_or_str(query), threshold)
-            .await;
-        match res {
-            Ok(res) => Some(res),
-            Err(_) => None,
-        }
+            .await
+            .ok()
     }
 }
