@@ -76,23 +76,16 @@ mod simple_workflow_tests {
 
     workflow_test!(
         gemini_simple_workflow,
-        Model::Gemini15Flash,
+        Model::Gemini2_0Flash,
         SIMPLE_WORKFLOW_PATH
     );
 
-    workflow_test!(simple_coder, Model::Qwen2_5Coder1_5B, CODER_PATH);
-
-    workflow_test!(o1_simple, Model::O1Mini, SIMPLE_WORKFLOW_PATH);
+    workflow_test!(o1_simple, Model::GPT4oMini, SIMPLE_WORKFLOW_PATH);
 }
 
 mod insert_workflow_tests {
     use super::*;
 
-    workflow_test!(
-        insert_workflow_ollama,
-        Model::Phi3Medium,
-        INSERT_WORKFLOW_PATH
-    );
     workflow_test!(
         insert_workflow_openai,
         Model::GPT4oMini,
@@ -111,17 +104,11 @@ mod function_call_tests {
 
     workflow_test!(
         gemini_function_call,
-        Model::Gemini15Pro,
+        Model::Gemini2_0Flash,
         SEARCH_WORKFLOW_PATH,
         "What is the most crowded street in Istanbul?"
     );
 
-    workflow_test!(
-        function_call_llama3_2_3b,
-        Model::Llama3_2_3B,
-        SEARCH_WORKFLOW_PATH,
-        "What is the most famous street in Istanbul?"
-    );
     workflow_test!(
         openai_function_calling,
         Model::GPT4o,
@@ -130,7 +117,7 @@ mod function_call_tests {
     );
     workflow_test!(
         llama3_1_function_calling,
-        Model::Llama3_1_8B,
+        Model::Llama3_1_8bInstructQ4Km,
         SEARCH_WORKFLOW_PATH,
         "How many fairy chimneys are there in Cappadocia?"
     );
@@ -141,7 +128,7 @@ mod all_tools_workflow_tests {
 
     workflow_test!(
         gemini_all_tools_workflow,
-        Model::Gemini15Flash,
+        Model::Gemini2_0Flash,
         ALL_TOOLS_WORKFLOW_PATH,
         "What's the weather like in New York and how does it affect the stock market?"
     );
@@ -159,7 +146,7 @@ mod questions_workflow_tests {
 
     workflow_test!(
         questions_workflow,
-        Model::Phi3Medium,
+        Model::Gemma3_4b,
         QUESTIONS_WORKFLOW_PATH,
         "Tell me about the history of artificial intelligence."
     );
@@ -170,7 +157,7 @@ mod post_process_workflow_tests {
 
     workflow_test!(
         post_process_workflow,
-        Model::Llama3_1_8B,
+        Model::Llama3_1_8bInstructQ4Km,
         POST_PROCESS_WORKFLOW_PATH,
         "Summarize the main plot points of Romeo and Juliet."
     );
@@ -180,19 +167,14 @@ mod context_size_tests {
     use super::*;
 
     workflow_test!(
-        context_size_phi3_5,
-        Model::Phi3_5Mini,
-        CONTEXT_SIZE_WORKFLOW_PATH
-    );
-    workflow_test!(
         context_size_llama,
-        Model::Llama3_1_8B,
+        Model::Llama3_2_1bInstructQ4Km,
         CONTEXT_SIZE_WORKFLOW_PATH
     );
 
     workflow_test!(
         context_size_gemini,
-        Model::Gemini15Flash,
+        Model::Gemini2_0Flash,
         CONTEXT_SIZE_WORKFLOW_PATH
     );
 }
@@ -202,14 +184,8 @@ mod custom_tool_tests {
 
     workflow_test!(
         gemini_custom_tool_workflow,
-        Model::Gemini15Pro,
+        Model::Gemini2_0Flash,
         CUSTOM_TOOL_WORKFLOW_PATH
-    );
-
-    workflow_test!(
-        http_custom_tool_workflow,
-        Model::Llama3_1_8B,
-        CUSTOM_TOOL_HTTP_WORKFLOW_PATH
     );
 
     workflow_test!(
@@ -219,18 +195,12 @@ mod custom_tool_tests {
     );
 }
 
-mod base_workflow_tests {
-    use super::*;
-
-    workflow_test!(base_workflow, Model::Llama3_1_8BTextQ4KM, BASE_PATH);
-}
-
 mod structured_output_tests {
     use super::*;
 
     workflow_test!(
         llama_structured_output,
-        Model::Llama3_1_8B,
+        Model::Llama3_1_8bInstructQ4Km,
         LLAMA_STRUCTURED_PATH
     );
 
@@ -242,7 +212,7 @@ mod structured_output_tests {
 
     workflow_test!(
         gemini_structured_output,
-        Model::Gemini15Pro,
+        Model::Gemini2_0Flash,
         GEMINI_STRUCTURED_PATH
     );
 }
@@ -253,18 +223,6 @@ mod openrouter_tests {
     workflow_test!(openrouter_sonnet, Model::OR3_5Sonnet, SIMPLE_WORKFLOW_PATH);
 
     workflow_test!(
-        openrouter_llama,
-        Model::ORLlama3_1_70B,
-        SIMPLE_WORKFLOW_PATH
-    );
-
-    workflow_test!(
-        custom_tool_openrouter_llama,
-        Model::ORLlama3_1_70B,
-        CUSTOM_TOOL_WORKFLOW_PATH
-    );
-
-    workflow_test!(
         custom_tool_openrouter_sonnet,
         Model::OR3_5Sonnet,
         ALL_TOOLS_WORKFLOW_PATH
@@ -272,19 +230,7 @@ mod openrouter_tests {
 
     workflow_test!(
         qwen_custom_tool_openrouter,
-        Model::ORQwen2_5_72B,
+        Model::OR3_7Sonnet,
         ALL_TOOLS_WORKFLOW_PATH
-    );
-
-    workflow_test!(
-        nous_custom_tool_openrouter,
-        Model::ORNousHermes405B,
-        QUESTIONS_WORKFLOW_PATH
-    );
-
-    workflow_test!(
-        qwen_coder_custom_tool_openrouter,
-        Model::ORQwen2_5Coder32B,
-        CODER_PATH
     );
 }

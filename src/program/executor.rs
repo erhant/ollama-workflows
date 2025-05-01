@@ -5,7 +5,6 @@ use super::workflow::Workflow;
 use crate::api_interface::gem_api::GeminiExecutor;
 use crate::api_interface::open_router::OpenRouterExecutor;
 use crate::api_interface::openai_api::OpenAIExecutor;
-use crate::api_interface::vllm::VLLMExecutor;
 use crate::memory::types::Entry;
 use crate::memory::{MemoryReturnType, ProgramMemory};
 use crate::program::atomics::MessageInput;
@@ -57,7 +56,6 @@ fn log_colored(msg: &str) {
 }
 
 /// Executor, the main struct that executes the workflow
-#[derive(Default)]
 pub struct Executor {
     model: Model,
     llm: Ollama,
@@ -520,10 +518,9 @@ impl Executor {
         let response = match self.model.clone().into() {
             ModelProvider::Ollama => {
                 return match self.model {
-                    Model::Llama3_1_8BTextQ4KM
-                    | Model::Llama3_1_8BTextQ8
-                    | Model::Llama3_1_70BTextQ4KM
-                    | Model::Llama3_2_1BTextQ4KM => {
+                    Model::Llama3_1_8bInstructQ4Km
+                    | Model::Llama3_2_1bInstructQ4Km
+                    | Model::Llama3_3_70bInstructQ4Km => {
                         let prompt = input
                             .last()
                             .map(|msg| msg.content.as_str())
@@ -590,11 +587,6 @@ impl Executor {
                     .generate_text(input, schema.as_ref(), self.model.has_reasoning())
                     .await?
             }
-            ModelProvider::VLLM => {
-                let executor =
-                    VLLMExecutor::new(self.model.to_string(), "http://localhost:8000".to_string());
-                executor.generate_text(input, schema).await?
-            }
         };
 
         Ok(response)
@@ -635,13 +627,9 @@ impl Executor {
                     .send_function_call(
                         request,
                         match self.model {
-                            Model::NousTheta => llama_parser.clone(),
-                            Model::Llama3_1_8B
-                            | Model::Llama3_1_8Bf16
-                            | Model::Llama3_1_8Bq8
-                            | Model::Llama3_2_3B
-                            | Model::Llama3_1_70Bq8
-                            | Model::Llama3_1_70B => llama_parser.clone(),
+                            Model::Llama3_3_70bInstructQ4Km
+                            | Model::Llama3_2_1bInstructQ4Km
+                            | Model::Llama3_1_8bInstructQ4Km => llama_parser.clone(),
                             _ => oai_parser.clone(),
                         },
                     )
@@ -660,7 +648,7 @@ impl Executor {
                 let api_key = std::env::var("GEMINI_API_KEY").expect("$GEMINI_API_KEY is not set");
                 let max_tokens = config.max_tokens.unwrap_or(800);
                 match self.model{
-                    Model::Gemini15Flash | Model::Gemini15Pro => {
+                    Model::Gemini2_0Flash | Model::Gemini2_5ProExp => {
                         let executor = GeminiExecutor::new(self.model.to_string(), api_key, max_tokens);
                         executor
                             .function_call(prompt, tools, raw_mode, oai_parser)
@@ -676,13 +664,6 @@ impl Executor {
                 let openai_executor =
                     OpenRouterExecutor::new(self.model.to_string(), api_key.clone());
                 openai_executor
-                    .function_call(prompt, tools, raw_mode, oai_parser)
-                    .await?
-            }
-            ModelProvider::VLLM => {
-                let executor =
-                    VLLMExecutor::new(self.model.to_string(), "http://localhost:8000".to_string());
-                executor
                     .function_call(prompt, tools, raw_mode, oai_parser)
                     .await?
             }
@@ -736,7 +717,7 @@ mod tests {
     #[tokio::test]
     #[ignore = "requires Ollama"]
     async fn test_ollama_pull() {
-        let executor = Executor::new(Model::Phi3_5Mini);
+        let executor = Executor::new(Model::Llama3_2_1bInstructQ4Km);
         let locals = executor
             .list_local_models()
             .await

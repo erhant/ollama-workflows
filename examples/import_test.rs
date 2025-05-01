@@ -12,7 +12,7 @@ fn main() {
     let rt = tokio::runtime::Runtime::new().unwrap();
     rt.block_on(async {
         // Initialize the executor with desired model
-        let exe = Executor::new(Model::Phi3Medium);
+        let exe = Executor::new(Model::GPT4o);
 
         // Load workflow from JSON file
         let workflow = Workflow::new_from_json("./tests/test_workflows/simple.json").unwrap();

@@ -327,7 +327,7 @@ mod tests {
     async fn test_reasoning() {
         let api_key = std::env::var("OPENROUTER_API_KEY").expect("OPENROUTER_API_KEY not set");
 
-        let model = Model::ORR1;
+        let model = Model::OR3_5Sonnet;
         assert_eq!(model.provider(), ModelProvider::OpenRouter);
         assert!(model.has_reasoning());
 
